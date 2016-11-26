@@ -21,7 +21,7 @@ class EbkMateCanvas
     @by = 8
     @by.times{ @canvas << Array.new; @bx.times{@canvas[-1] << 0} }
     @by.times{ @addresses << Array.new; @bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
-    #@addresses.map!{|i|@addresses.index(i)%2==1;i.reverse;i}
+    @addresses.map!{|i|@addresses.index(i)%2==1;i.reverse;i}
     $RASPBIAN&&(@leds=Ws2812::Basic.new(40, 18); @leds.open;@leds.show)
   end
 
@@ -35,10 +35,12 @@ class EbkMateCanvas
     canv_local = @canvas
 
     if $RASPBIAN
+      addrc = 0
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
-          @leds[@addresses[indexy][indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
+          @leds[addrc] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
+          addrc+=1
         end
       end
       @leds.show
