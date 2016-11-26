@@ -1,0 +1,230 @@
+#!/usr/bin/ruby
+
+require 'socket'
+load 'font.rb'
+
+
+def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
+
+(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil? ? (puts "SIMULATION MODE") : (puts "require 'ws2812'";require('ws2812'))
+
+class EbkMateCanvas
+
+  def initialize
+    @canvas = []
+    @mode = :binary
+    bx = 5
+    by = 8
+    by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
+  end
+
+  attr_accessor :canvas
+  attr_accessor :mode
+
+  def show
+    # TODO Make the EbkMateCanvas.show() method
+    canv_local = @canvas
+    canv_local.length.times{|index|
+      if index%1==1
+        canv_local[index].reverse!
+      end
+    }
+
+
+    for byte in canv_local
+      $stdout << byte.inspect << "\n"
+    end
+    $stdout << "\n"
+
+
+  end
+
+  def shift
+    @canvas.length.times { |t| @canvas[t].shift }
+  end
+
+  def <<(a)
+    @canvas.length.times { |t| @canvas[t].shift }
+    a.each_with_index { |item, index| @canvas[index] << item }
+  end
+
+  def clear
+    @canvas = []
+    bx = 5
+    by = 8
+    by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
+  end
+
+end
+
+$QUEUE = []
+$CANVAS = EbkMateCanvas.new
+$BLACKLIST = {}
+$COOLDOWN = []
+$COOLDOWN_S = 1
+$THREADS = []
+$MAINTENANCE = false
+$CLIENTS = []
+
+$GAPS = 3
+
+
+server = TCPServer.new(1337)
+puts "Server is up."
+
+queuewatch = Thread.new {
+  require 'timeout'
+  loop do
+    if !$QUEUE.empty?
+      $CANVAS.mode = :binary
+      msg = $QUEUE.shift
+      for ch in msg.split("")
+        case ch
+          when " "
+            6.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+
+          when "\""
+            5.times do |i|
+              buf = []
+              getFontChar(ch).each { |byte| buf << byte[i+1] }
+              buf.map!(&:to_i)
+              false||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
+            end
+            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+
+          else
+            8.times do |i|
+              buf = []
+              getFontChar(ch).each { |byte| buf << byte[i] }
+              buf.map!(&:to_i)
+              buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
+            end
+            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+        end
+      end
+      $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+      sleep 1
+    end
+  end
+}
+
+Thread.new {
+  loop do
+    (/false|dead/=~queuewatch.status.to_s).nil?||Process.kill("KILL",$$)
+    sleep 1
+  end
+}
+
+def adminMenu(client)
+  client.puts "Welcome, #{client.peeraddr[-1]}. What do you want to do?"
+  loop do
+    client.puts "1) Blacklist IP"
+    client.puts "2) Pardon IP"
+    client.puts "3) Send a text"
+    client.puts "4) Toggle maintenance (currently #{$MAINTENANCE ? "on" : "off"})"
+    client.puts "5) Kill server"
+    client.puts "0) Exit"
+    case client.gets.chomp.to_i
+
+      when 0
+        return
+
+      when 1
+        client.puts "Enter IP to blacklist(q to quit)"
+        client_in_ip = client.gets.chomp
+        if !client_in_ip=="q"&&!client_in_ip=="127.0.0.1"
+          client.puts "Why do you want to blacklist #{client_in_ip}?(q to quit)"
+          client_in_rs = client.gets.chomp
+          unless client_in_rs=="q"
+            $BLACKLIST.store(client_in_ip, client_in_rs)
+            client.puts "#{client_in_ip} was blacklisted. Reason: #{client_in_rs}"
+          end
+          elsif client_in_ip=="127.0.0.1"
+            client.puts "You can't blacklist yourself!"
+        end
+
+      when 2
+        client.puts "Which IP do you want to pardon?(q to quit) $BLACKLIST currently looks like this: "
+        client.puts $BLACKLIST.inspect
+        client_in_ip = client.gets.chomp
+        unless client_in_ip=="q"
+          $BLACKLIST.delete(client_in_ip).nil?&&("E: #{client_in_ip} wasn't blacklisted.")
+        end
+
+      when 3
+        client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
+        climsg = client.gets.chomp
+        client.puts "KTHXBYE!!1!1!!"
+        puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
+        $QUEUE << climsg
+
+      when 4
+        if $MAINTENANCE
+          $MAINTENANCE = false
+        else
+          until $CLIENTS.empty?;$CLIENTS.shift.close;end
+          until $THREADS.empty?;$THREADS.shift.kill; end
+          $MAINTENANCE = true
+        end
+        client.puts "Maintenance toggled. => #{$MAINTENANCE ? "on" : "off"}"
+
+      when 5
+        client.puts "Shutting down."
+        puts "RECEIVED SIGINT"
+        $MAINTENANCE = true
+        until $CLIENTS.empty?;$CLIENTS.shift.close;end
+        until $THREADS.empty?;$THREADS.shift.kill; end
+        Thread.new {sleep 2; Process.kill("INT",$$)}
+        return
+      else
+        client.puts "Invalid command"
+    end
+  end
+end
+
+Thread.new {
+  $THREADS.select!{|i|i.status!=false}
+  sleep 1
+}
+
+$ADMINS = ["127.0.0.1","192.168.21.187","192.168.21.155"]
+$ADMINS = Regexp.new($ADMINS.join("|"))
+
+Signal.trap("INT") {
+  puts "Bye"
+  exit
+}
+
+loop do
+  $THREADS << Thread.start(server.accept) do |client|
+    if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
+      $CLIENTS << client
+      if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
+        client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
+        climsg = client.gets.chomp
+        #Thread.new{$COOLDOWN<<client.peeraddr[-1]; sleep $COOLDOWN_S; $COOLDOWN.select!(&client.peeraddr[-1].method(:==))}
+        client.puts "KTHXBYE!!1!1!!"
+        puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
+        $QUEUE << climsg
+        client.close
+      elsif $COOLDOWN.include?(client.peeraddr[-1])
+        $COOLDOWN.select!(&client.peeraddr[-1].method(:==))
+        $BLACKLIST[client.peeraddr[-1]] = "Cooldown wasn't expired"
+        client.puts "You have been blacklisted by the owner."
+        client.puts "Reason: #{$BLACKLIST[client.peeraddr[-1]]}"
+        client.close
+      else
+        client.puts "You have been blacklisted by the owner."
+        client.puts "Reason: #{$BLACKLIST[client.peeraddr[-1]]}"
+        client.close
+      end
+    elsif !($ADMINS=~client.peeraddr[-1]).nil?
+      $THREADS.pop
+      adminMenu(client)
+      client.close
+    else
+      client.puts "MAINTENANCE IN PROGRESS"
+      client.close
+    end
+  end
+end
