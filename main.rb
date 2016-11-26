@@ -6,7 +6,7 @@ $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 $RASPBIAN = ARGV.shift!="--simulate"
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
-class Integer;def to_led_bin;self!=0 ? (return 0xffffff) : (return 0);end;end
+class Integer;def to_led_bin;self!=0 ? (return 0x00ffff) : (return 0);end;end
 $RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
@@ -38,7 +38,8 @@ class EbkMateCanvas
     if $RASPBIAN
       canv_local.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
-          hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
+          hexcol = "%06x"%canv_local[indexy][indexx]
+          mode==:binary&&hexcol=hexcol.to_led_bin
           @leds[@addresses.flatten[indexy*5+indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
@@ -57,10 +58,18 @@ class EbkMateCanvas
     @canvas.length.times { |t| @canvas[t].shift }
   end
 
+  def renderPic(data)
+    decay = data.shift.split("=")[-1]
+    decay.split("=")[-1].to_i>10000&&raise
+    pic = []
+    self.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
+    self.show
+    sleep decay.split("=")[-1].to_i
+  end
+
   def <<(a)
     @canvas.length.times { |t| @canvas[t].shift }
     a.each_with_index { |item, index| @canvas[index] << item }
-    p canvas
   end
 
   def clear
@@ -89,34 +98,39 @@ queuewatch = Thread.new {
   require 'timeout'
   loop do
     if !$QUEUE.empty?
-      $CANVAS.mode = :binary
       msg = $QUEUE.shift
-      for ch in msg.split("")
-        case ch
-          when " "
-            6.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+      if msg.is_a? String
+        puts "String"
+        for ch in msg.split("")
+          case ch
+            when " "
+              6.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
 
-          when "\""
-            5.times do |i|
-              buf = []
-              getFontChar(ch).each { |byte| buf << byte[i+1] }
-              buf.map!(&:to_i)
-              $CANVAS<<buf;$CANVAS.show;sleep 0.04
-            end
-            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+            when "\""
+              5.times do |i|
+                buf = []
+                getFontChar(ch).each { |byte| buf << byte[i+1] }
+                buf.map!(&:to_i)
+                $CANVAS<<buf;$CANVAS.show;sleep 0.04
+              end
+              $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
 
-          else
-            8.times do |i|
-              buf = []
-              getFontChar(ch).each { |byte| buf << byte[i] }
-              buf.map!(&:to_i)
-              buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
-            end
-            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+            else
+              8.times do |i|
+                buf = []
+                getFontChar(ch).each { |byte| buf << byte[i] }
+                buf.map!(&:to_i)
+                buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
+              end
+              $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+          end
         end
+        $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+        sleep 1
+      else
+        puts "Array"
+        $CANVAS.renderPic(msg)
       end
-      $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
-      sleep 1
     end
   end
 }
@@ -136,13 +150,14 @@ def adminMenu(client)
     client.puts "3) Send a text"
     client.puts "4) Toggle maintenance (currently #{$MAINTENANCE ? "on" : "off"})"
     client.puts "5) Kill server"
+    client.puts "6) Send a picture"
     client.puts "0) Exit"
-    case client.gets.chomp.to_i
+    case client.gets.chomp
 
-      when 0
+      when "0"
         return
 
-      when 1
+      when "1"
         client.puts "Enter IP to blacklist(q to quit)"
         client_in_ip = client.gets.chomp
         if !client_in_ip=="q"&&!client_in_ip=="127.0.0.1"
@@ -156,7 +171,7 @@ def adminMenu(client)
             client.puts "You can't blacklist yourself!"
         end
 
-      when 2
+      when "2"
         client.puts "Which IP do you want to pardon?(q to quit) $BLACKLIST currently looks like this: "
         client.puts $BLACKLIST.inspect
         client_in_ip = client.gets.chomp
@@ -164,14 +179,14 @@ def adminMenu(client)
           $BLACKLIST.delete(client_in_ip).nil?&&("E: #{client_in_ip} wasn't blacklisted.")
         end
 
-      when 3
+      when "3"
         client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
         climsg = client.gets.chomp
         client.puts "KTHXBYE!!1!1!!"
         puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
         $QUEUE << climsg
 
-      when 4
+      when "4"
         if $MAINTENANCE
           $MAINTENANCE = false
         else
@@ -181,7 +196,7 @@ def adminMenu(client)
         end
         client.puts "Maintenance toggled. => #{$MAINTENANCE ? "on" : "off"}"
 
-      when 5
+      when "5"
         client.puts "Shutting down."
         puts "RECEIVED SIGINT"
         $MAINTENANCE = true
@@ -189,8 +204,24 @@ def adminMenu(client)
         until $THREADS.empty?;$THREADS.shift.kill; end
         Thread.new {sleep 2; Process.kill("INT",$$)}
         return
+
+      when "6"
+        client.puts "Enter formatted string"
+        begin
+          data = client.gets.chomp.split(";")
+          decay = data.shift.split("=")[-1]
+          decay.split("=")[-1].to_i>10000&&raise
+          pic = []
+          $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
+          $CANVAS.show
+          sleep decay.split("=")[-1].to_i
+        rescue
+          Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
+        end
+
       else
         client.puts "Invalid command"
+
     end
   end
 end
@@ -227,12 +258,7 @@ loop do
           elsif mode=="1"
             begin
               data = client.gets.chomp.split(";")
-              decay = data.shift.split("=")[-1]
-              decay.split("=")[-1].to_i>10000&&raise
-              pic = []
-              $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
-              $CANVAS.show
-              sleep decay.split("=")[-1].to_i
+              $QUEUE << data
             rescue
               Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
             end
