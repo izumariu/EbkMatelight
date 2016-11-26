@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="debug35 - added reset at end of script">
+    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.rb" afterPath="$PROJECT_DIR$/main.rb" />
     </list>
@@ -19,7 +19,7 @@
     <SUITE FILE_PATH="coverage/EbkMatelight@main.coverage" NAME="main Coverage Results" MODIFIED="1480166721939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="EbkMatelight" />
   </component>
   <component name="CreatePatchCommitExecutor">
-    <option name="PATCH_PATH" value="" />
+    <option name="PATCH_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
@@ -30,8 +30,8 @@
       <file leaf-file-name="main.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="197" column="67" selection-start-line="197" selection-start-column="67" selection-end-line="197" selection-end-column="67" />
+            <state relative-caret-position="235">
+              <caret line="198" column="38" selection-start-line="198" selection-start-column="38" selection-end-line="198" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -313,7 +313,7 @@
       <workItem from="1480010559470" duration="3488000" />
       <workItem from="1480099792074" duration="23000" />
       <workItem from="1480099834518" duration="1878000" />
-      <workItem from="1480149647870" duration="33469000" />
+      <workItem from="1480149647870" duration="33635000" />
     </task>
     <task id="LOCAL-00001" summary="Added $RASPBIAN">
       <created>1480162695075</created>
@@ -637,11 +637,18 @@
       <option name="project" value="LOCAL" />
       <updated>1480189609427</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="debug36 - added changeable pixel color">
+      <created>1480190695432</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1480190695432</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="67663000" />
+    <option name="totallyTimeSpent" value="67829000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -687,7 +694,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug12" />
     <MESSAGE value="debug13" />
     <MESSAGE value="debug14" />
     <MESSAGE value="debug15" />
@@ -712,7 +718,8 @@
     <MESSAGE value="HARD RESET TO PREVIOUS VERSION" />
     <MESSAGE value="debug34 - removed debug output" />
     <MESSAGE value="debug35 - added reset at end of script" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug35 - added reset at end of script" />
+    <MESSAGE value="debug36 - added changeable pixel color" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug36 - added changeable pixel color" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -825,8 +832,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="280">
-          <caret line="197" column="67" selection-start-line="197" selection-start-column="67" selection-end-line="197" selection-end-column="67" />
+        <state relative-caret-position="235">
+          <caret line="198" column="38" selection-start-line="198" selection-start-column="38" selection-end-line="198" selection-end-column="38" />
           <folding />
         </state>
       </provider>
