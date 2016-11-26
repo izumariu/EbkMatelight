@@ -22,7 +22,7 @@ class EbkMateCanvas
     @by.times{ @canvas << Array.new; @bx.times{@canvas[-1] << 0} }
     @by.times{ @addresses << Array.new; @bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
     #@addresses.map!{|i|@addresses.index(i)%2==1;i.reverse;i}
-    $RASPBIAN&&(@leds=Ws2812::Basic.new(40, 18); @leds.open; @leds.show)
+    $RASPBIAN&&(@leds=Ws2812::Basic.new(40, 18); @leds.open;@leds.show)
   end
 
   attr_accessor :canvas
