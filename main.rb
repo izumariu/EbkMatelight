@@ -60,7 +60,6 @@ class EbkMateCanvas
   def <<(a)
     @canvas.length.times { |t| @canvas[t].shift }
     a.each_with_index { |item, index| @canvas[index] << item }
-    p canvas
   end
 
   def clear
@@ -213,10 +212,11 @@ loop do
     if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
       $CLIENTS << client
         if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
-          client.puts "Mode?"
-          client.puts "0) Text"
-          client.puts "1) Picture"
-          mode = client.gets.chomp
+          #client.puts "Mode?"
+          #client.puts "0) Text"
+          #client.puts "1) Picture"
+          #mode = client.gets.chomp
+          mode = "0"
           if mode=="0"
             client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
             climsg = client.gets.chomp
