@@ -40,7 +40,7 @@ class EbkMateCanvas
       canv_local.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
-          @leds[@addresses[indexy][indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
+          @leds[@addresses.flatten[indexy*5+indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
       for byte in canv_local
