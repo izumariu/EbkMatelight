@@ -196,7 +196,7 @@ def adminMenu(client)
           client.puts "Enter color(example: c00deed)"
           pxcol_temp = client.gets.chomp
           (pxcol_temp.length!=6||pxcol_temp.match(/[^[0-9a-f]]/)!=nil)&&raise
-          $PXCOL = pxcol_temp.to_i(16)
+          $PXCOL = pxcol_temp
           puts "$PXCOL => 0x#{"%06x"%$PXCOL}"
         rescue
 
