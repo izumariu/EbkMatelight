@@ -5,7 +5,7 @@ load 'font.rb'
 $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
-class Integer;def to_binary;self!=0 ? (return 0xffffff) : (return 0);end;end
+class Integer;def to_led_bin;self!=0 ? (return 0xffffff) : (return 0);end;end
 $RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
@@ -35,7 +35,7 @@ class EbkMateCanvas
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           #@leds[@addresses[y][x]] = WS2812::Color.new(@leds[@addresses[y][x]].to_s(16)[0,2].to_i(16))
-          puts "[#{indexy}][#{indexx}] => 0x#{"%06x"%canv_local[indexy][indexx]}"
+          puts "[#{indexy}][#{indexx}] => 0x#{"%06x"%canv_local[indexy][indexx].to_led_bin}"
         end
       end
     else
