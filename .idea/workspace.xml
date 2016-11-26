@@ -30,8 +30,8 @@
       <file leaf-file-name="main.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="199" column="36" selection-start-line="199" selection-start-column="36" selection-end-line="199" selection-end-column="36" />
+            <state relative-caret-position="195">
+              <caret line="199" column="43" selection-start-line="199" selection-start-column="43" selection-end-line="199" selection-end-column="43" />
               <folding />
             </state>
           </provider>
@@ -313,14 +313,7 @@
       <workItem from="1480010559470" duration="3488000" />
       <workItem from="1480099792074" duration="23000" />
       <workItem from="1480099834518" duration="1878000" />
-      <workItem from="1480149647870" duration="33845000" />
-    </task>
-    <task id="LOCAL-00001" summary="Added $RASPBIAN">
-      <created>1480162695075</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1480162695075</updated>
+      <workItem from="1480149647870" duration="33997000" />
     </task>
     <task id="LOCAL-00002" summary="Fixed something for debugging">
       <created>1480162876886</created>
@@ -658,11 +651,18 @@
       <option name="project" value="LOCAL" />
       <updated>1480190947831</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="debug39 - fixed changeable pixel color again">
+      <created>1480191047742</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1480191047743</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="68039000" />
+    <option name="totallyTimeSpent" value="68191000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -708,7 +708,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug15" />
     <MESSAGE value="fixed canv_local(maybe)" />
     <MESSAGE value="maybe fixed running text" />
     <MESSAGE value="debug20" />
@@ -733,7 +732,8 @@
     <MESSAGE value="debug36 - added changeable pixel color" />
     <MESSAGE value="debug37- added some debugging lines" />
     <MESSAGE value="debug38 - fixed changeable pixel color&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug38 - fixed changeable pixel color&#10;" />
+    <MESSAGE value="debug39 - fixed changeable pixel color again" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug39 - fixed changeable pixel color again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -846,8 +846,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="199" column="36" selection-start-line="199" selection-start-column="36" selection-end-line="199" selection-end-column="36" />
+        <state relative-caret-position="195">
+          <caret line="199" column="43" selection-start-line="199" selection-start-column="43" selection-end-line="199" selection-end-column="43" />
           <folding />
         </state>
       </provider>
