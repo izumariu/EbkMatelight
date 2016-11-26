@@ -6,7 +6,7 @@ $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 $RASPBIAN = ARGV.shift!="--simulate"
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
-class Integer;def to_led_bin;self!=0 ? (return 0xffffff) : (return 0);end;end
+class Integer;def to_led_bin;self!=0 ? (return 0x00ffff) : (return 0);end;end
 $RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
