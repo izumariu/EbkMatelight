@@ -35,15 +35,14 @@ class EbkMateCanvas
     canv_local = @canvas
 
     if $RASPBIAN
-      addrc = 0
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
-          @leds[addrc] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
-          addrc+=1
+          @leds[@addresses[indexy][indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
       @leds.show
+      gets
     else
       for byte in canv_local
         $stdout << byte.inspect << "\n"
