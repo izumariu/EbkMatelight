@@ -17,16 +17,18 @@ class EbkMateCanvas
     @@addrc = 0
     @leds = nil
     @mode = :binary
-    bx = 5
-    by = 8
-    by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
-    by.times{ @addresses << Array.new; bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
+    @bx = 5
+    @by = 8
+    @by.times{ @canvas << Array.new; @bx.times{@canvas[-1] << 0} }
+    @by.times{ @addresses << Array.new; @bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
     @addresses.map!{|i|@addresses.index(i)%2==1;@addresses[@addresses.index(i)].reverse;i}
-    $RASPBIAN&&@leds=Ws2812::Basic.new(40, 21, 128)
+    $RASPBIAN&&@leds=Ws2812::Basic.new(40, 18)
   end
 
   attr_accessor :canvas
   attr_accessor :mode
+  attr_reader :bx
+  attr_reader :by
 
   def show
     # TODO Make the EbkMateCanvas.show() method
@@ -39,6 +41,7 @@ class EbkMateCanvas
           @leds[@addresses[indexy][indexx]] = WS2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
+      @leds.show
     else
       for byte in canv_local
         $stdout << byte.inspect << "\n"
@@ -59,9 +62,7 @@ class EbkMateCanvas
 
   def clear
     @canvas = []
-    bx = 5
-    by = 8
-    by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
+    @by.times{ @canvas << Array.new; @bx.times{@canvas[-1] << 0} }
   end
 
 end
@@ -208,13 +209,26 @@ loop do
   $THREADS << Thread.start(server.accept) do |client|
     if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
       $CLIENTS << client
-      if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
-        client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
-        climsg = client.gets.chomp
-        #Thread.new{$COOLDOWN<<client.peeraddr[-1]; sleep $COOLDOWN_S; $COOLDOWN.select!(&client.peeraddr[-1].method(:==))}
-        client.puts "KTHXBYE!!1!1!!"
-        puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
-        $QUEUE << climsg
+        if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
+          mode = client.gets.chomp
+          if mode=="0"
+            client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
+            climsg = client.gets.chomp
+            #Thread.new{$COOLDOWN<<client.peeraddr[-1]; sleep $COOLDOWN_S; $COOLDOWN.select!(&client.peeraddr[-1].method(:==))}
+            client.puts "KTHXBYE!!1!1!!"
+            puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
+            $QUEUE << climsg
+          elsif mode=="1"
+            begin
+              data = client.gets.chomp.split(";")
+              decay = data.shift.split("=")[-1]
+              pic = []
+              $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
+
+            rescue
+              Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
+            end
+          end
         client.close
       elsif $COOLDOWN.include?(client.peeraddr[-1])
         $COOLDOWN.select!(&client.peeraddr[-1].method(:==))
