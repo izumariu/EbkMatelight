@@ -97,6 +97,7 @@ queuewatch = Thread.new {
           when "\""
             5.times do |i|
               buf = []
+              p buf
               getFontChar(ch).each { |byte| buf << byte[i+1] }
               buf.map!(&:to_i)
               $CANVAS<<buf;$CANVAS.show;sleep 0.04
@@ -106,6 +107,7 @@ queuewatch = Thread.new {
           else
             8.times do |i|
               buf = []
+              p buf
               getFontChar(ch).each { |byte| buf << byte[i] }
               buf.map!(&:to_i)
               buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
