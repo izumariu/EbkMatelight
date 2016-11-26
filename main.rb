@@ -47,7 +47,7 @@ class EbkMateCanvas
         $stdout << byte.inspect << "\n"
       end
       @leds.show
-      gets
+      #gets
     else
       for byte in canv_local
         $stdout << byte.inspect << "\n"
