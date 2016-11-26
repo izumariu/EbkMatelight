@@ -2,20 +2,26 @@
 
 require 'socket'
 load 'font.rb'
-
+$RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
 
-(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil? ? (puts "SIMULATION MODE") : (puts "require 'ws2812'";require('ws2812'))
+$RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
 
   def initialize
     @canvas = []
+    @addresses = []
+    @@addrc = 0
+    @leds = nil
     @mode = :binary
     bx = 5
     by = 8
     by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
+    by.times{ @addresses << Array.new; bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
+    @addresses.map!{|i|@addresses.index(i)%2==1;@addresses[@addresses.index(i)].reverse;i}
+    $RASPBIAN&&@leds=Ws2812::Basic.new(40, 21, 255)
   end
 
   attr_accessor :canvas
@@ -24,18 +30,20 @@ class EbkMateCanvas
   def show
     # TODO Make the EbkMateCanvas.show() method
     canv_local = @canvas
-    canv_local.length.times{|index|
-      if index%1==1
-        canv_local[index].reverse!
+
+    if $RASPBIAN
+      @addresses.each_with_index do |y, indexy|
+        y.each_with_index do |x, indexx|
+          #@leds[@addresses[y][x]] = WS2812::Color.new(@leds[@addresses[y][x]].to_s(16)[0,2].to_i(16))
+          p @leds[@addresses[y][x]]
+        end
       end
-    }
-
-
-    for byte in canv_local
-      $stdout << byte.inspect << "\n"
+    else
+      for byte in canv_local
+        $stdout << byte.inspect << "\n"
+      end
+      $stdout << "\n"
     end
-    $stdout << "\n"
-
 
   end
 
@@ -88,7 +96,7 @@ queuewatch = Thread.new {
               buf = []
               getFontChar(ch).each { |byte| buf << byte[i+1] }
               buf.map!(&:to_i)
-              false||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
+              $CANVAS<<buf;$CANVAS.show;sleep 0.04
             end
             $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
 
