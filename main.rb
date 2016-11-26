@@ -99,7 +99,7 @@ queuewatch = Thread.new {
   loop do
     if !$QUEUE.empty?
       msg = $QUEUE.shift
-      unless msg.is_a? Array
+      if msg.is_a? String
         for ch in msg.split("")
           case ch
             when " "
@@ -127,11 +127,10 @@ queuewatch = Thread.new {
         $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
         sleep 1
       else
-        $CANVAS.renderPic(data)
+        $CANVAS.renderPic(msg)
       end
     end
   end
-
 }
 
 Thread.new {
@@ -208,7 +207,12 @@ def adminMenu(client)
         client.puts "Enter formatted string"
         begin
           data = client.gets.chomp.split(";")
-          $QUEUE << data
+          decay = data.shift.split("=")[-1]
+          decay.split("=")[-1].to_i>10000&&raise
+          pic = []
+          $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
+          $CANVAS.show
+          sleep decay.split("=")[-1].to_i
         rescue
           Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
         end
