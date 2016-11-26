@@ -35,7 +35,7 @@ class EbkMateCanvas
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           #@leds[@addresses[y][x]] = WS2812::Color.new(@leds[@addresses[y][x]].to_s(16)[0,2].to_i(16))
-          puts "[#{indexy}][#{indexx}] => #{@canvas[indexx][indexy]}"
+          puts "[#{indexy}][#{indexx}] => #{canv_local[indexy][indexx].inspect}"
         end
       end
     else
