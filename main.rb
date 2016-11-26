@@ -100,6 +100,7 @@ queuewatch = Thread.new {
     if !$QUEUE.empty?
       msg = $QUEUE.shift
       if msg.is_a? String
+        puts "String"
         for ch in msg.split("")
           case ch
             when " "
@@ -127,6 +128,7 @@ queuewatch = Thread.new {
         $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
         sleep 1
       else
+        puts "Array"
         $CANVAS.renderPic(msg)
       end
     end
