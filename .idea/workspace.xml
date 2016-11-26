@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="">
+    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="debug35 - added reset at end of script">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.rb" afterPath="$PROJECT_DIR$/main.rb" />
     </list>
@@ -30,8 +30,8 @@
       <file leaf-file-name="main.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
-              <caret line="206" column="15" selection-start-line="206" selection-start-column="15" selection-end-line="206" selection-end-column="15" />
+            <state relative-caret-position="280">
+              <caret line="197" column="67" selection-start-line="197" selection-start-column="67" selection-end-line="197" selection-end-column="67" />
               <folding />
             </state>
           </provider>
@@ -313,7 +313,7 @@
       <workItem from="1480010559470" duration="3488000" />
       <workItem from="1480099792074" duration="23000" />
       <workItem from="1480099834518" duration="1878000" />
-      <workItem from="1480149647870" duration="32411000" />
+      <workItem from="1480149647870" duration="33469000" />
     </task>
     <task id="LOCAL-00001" summary="Added $RASPBIAN">
       <created>1480162695075</created>
@@ -630,11 +630,18 @@
       <option name="project" value="LOCAL" />
       <updated>1480187776279</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="debug35 - added reset at end of script">
+      <created>1480189609427</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1480189609427</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="66605000" />
+    <option name="totallyTimeSpent" value="67663000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -680,7 +687,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="debug11" />
     <MESSAGE value="debug12" />
     <MESSAGE value="debug13" />
     <MESSAGE value="debug14" />
@@ -705,7 +711,8 @@
     <MESSAGE value="debug35" />
     <MESSAGE value="HARD RESET TO PREVIOUS VERSION" />
     <MESSAGE value="debug34 - removed debug output" />
-    <option name="LAST_COMMIT_MESSAGE" value="debug34 - removed debug output" />
+    <MESSAGE value="debug35 - added reset at end of script" />
+    <option name="LAST_COMMIT_MESSAGE" value="debug35 - added reset at end of script" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -818,8 +825,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="206" column="15" selection-start-line="206" selection-start-column="15" selection-end-line="206" selection-end-column="15" />
+        <state relative-caret-position="280">
+          <caret line="197" column="67" selection-start-line="197" selection-start-column="67" selection-end-line="197" selection-end-column="67" />
           <folding />
         </state>
       </provider>

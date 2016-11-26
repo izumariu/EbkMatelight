@@ -5,8 +5,9 @@ load 'font.rb'
 $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 $RASPBIAN = ARGV.shift!="--simulate"
 
+$PXCOL = "00ffff"
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
-class Integer;def to_led_bin;self!=0 ? (return 0x00ffff) : (return 0);end;end
+class Integer;def to_led_bin;self!=0 ? (return $PXCOL.to_i(16)) : (return 0);end;end
 $RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
@@ -135,13 +136,14 @@ def adminMenu(client)
     client.puts "3) Send a text"
     client.puts "4) Toggle maintenance (currently #{$MAINTENANCE ? "on" : "off"})"
     client.puts "5) Kill server"
+    client.puts "6) Set pixel color of text"
     client.puts "0) Exit"
-    case client.gets.chomp.to_i
+    case client.gets.chomp
 
-      when 0
+      when "0"
         return
 
-      when 1
+      when "1"
         client.puts "Enter IP to blacklist(q to quit)"
         client_in_ip = client.gets.chomp
         if !client_in_ip=="q"&&!client_in_ip=="127.0.0.1"
@@ -155,7 +157,7 @@ def adminMenu(client)
             client.puts "You can't blacklist yourself!"
         end
 
-      when 2
+      when "2"
         client.puts "Which IP do you want to pardon?(q to quit) $BLACKLIST currently looks like this: "
         client.puts $BLACKLIST.inspect
         client_in_ip = client.gets.chomp
@@ -163,14 +165,14 @@ def adminMenu(client)
           $BLACKLIST.delete(client_in_ip).nil?&&("E: #{client_in_ip} wasn't blacklisted.")
         end
 
-      when 3
+      when "3"
         client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
         climsg = client.gets.chomp
         client.puts "KTHXBYE!!1!1!!"
         puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
         $QUEUE << climsg
 
-      when 4
+      when "4"
         if $MAINTENANCE
           $MAINTENANCE = false
         else
@@ -180,7 +182,7 @@ def adminMenu(client)
         end
         client.puts "Maintenance toggled. => #{$MAINTENANCE ? "on" : "off"}"
 
-      when 5
+      when "5"
         client.puts "Shutting down."
         puts "RECEIVED SIGINT"
         $MAINTENANCE = true
@@ -188,6 +190,16 @@ def adminMenu(client)
         until $THREADS.empty?;$THREADS.shift.kill; end
         Thread.new {sleep 2; Process.kill("INT",$$)}
         return
+
+      when "6"
+        begin
+          client.puts "Enter color(example: c00deed)"
+          pxcol_temp = client.gets.chomp
+          (pxcol_temp.length!=6||pxcol_temp.match(/[^0-9a-f]/)!=nil)&&raise
+          $PXCOL = pxcol_temp.to_i(16)
+        rescue
+
+        end
       else
         client.puts "Invalid command"
     end
