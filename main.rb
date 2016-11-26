@@ -5,7 +5,7 @@ load 'font.rb'
 $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
-
+class Integer;def to_binary;self!=0 ? (return 0xffffff) : (return 0);end;end
 $RASPBIAN ? (puts "require 'ws2812'";require('ws2812')) : (puts "SIMULATION MODE")
 
 class EbkMateCanvas
@@ -21,7 +21,7 @@ class EbkMateCanvas
     by.times{ @canvas << Array.new; bx.times{@canvas[-1] << 0} }
     by.times{ @addresses << Array.new; bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
     @addresses.map!{|i|@addresses.index(i)%2==1;@addresses[@addresses.index(i)].reverse;i}
-    $RASPBIAN&&@leds=Ws2812::Basic.new(40, 21, 255)
+    $RASPBIAN&&@leds=Ws2812::Basic.new(40, 21, 128)
   end
 
   attr_accessor :canvas
@@ -96,7 +96,6 @@ queuewatch = Thread.new {
               buf = []
               getFontChar(ch).each { |byte| buf << byte[i+1] }
               buf.map!(&:to_i)
-              buf.map!{|i|i==1;0xffffff;0}
               $CANVAS<<buf;$CANVAS.show;sleep 0.04
             end
             $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
@@ -106,7 +105,6 @@ queuewatch = Thread.new {
               buf = []
               getFontChar(ch).each { |byte| buf << byte[i] }
               buf.map!(&:to_i)
-              buf.map!{|i|i==1;0xffffff;0}
               buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
             end
             $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
