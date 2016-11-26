@@ -38,7 +38,7 @@ class EbkMateCanvas
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
-          @leds[@addresses[indexy][indexx]] = WS2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
+          @leds[@addresses[indexy][indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
       @leds.show
@@ -210,6 +210,9 @@ loop do
     if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
       $CLIENTS << client
         if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
+          client.puts "Mode?"
+          client.puts "0) Text"
+          client.puts "1) Picture"
           mode = client.gets.chomp
           if mode=="0"
             client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
@@ -222,9 +225,11 @@ loop do
             begin
               data = client.gets.chomp.split(";")
               decay = data.shift.split("=")[-1]
+              decay.split("=")[-1].to_i>10000&&raise
               pic = []
               $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
-
+              $CANVAS.show
+              sleep decay.split("=")[-1].to_i
             rescue
               Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
             end
