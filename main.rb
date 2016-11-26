@@ -34,6 +34,11 @@ class EbkMateCanvas
     # TODO Make the EbkMateCanvas.show() method
     canv_local = @canvas
 
+    canv_local.length.times{|index|
+      index%2==0&&canv_local[index].reverse
+      canv_local[index]
+    }
+
     if $RASPBIAN
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
