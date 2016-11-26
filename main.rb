@@ -35,8 +35,7 @@ class EbkMateCanvas
     canv_local = @canvas
 
     canv_local.length.times{|index|
-      index%2==0&&canv_local[index].reverse
-      canv_local[index]
+      index%2==0&&canv_local[index].reverse!
     }
 
     if $RASPBIAN
