@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="" />
+    <list default="true" id="87a6ddec-b5fe-43e9-9747-33820f1b97b0" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.rb" afterPath="$PROJECT_DIR$/main.rb" />
+    </list>
     <ignored path="EbkMatelight.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
@@ -27,8 +30,8 @@
       <file leaf-file-name="main.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+            <state relative-caret-position="150">
+              <caret line="136" column="42" selection-start-line="136" selection-start-column="42" selection-end-line="136" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -310,7 +313,7 @@
       <workItem from="1480010559470" duration="3488000" />
       <workItem from="1480099792074" duration="23000" />
       <workItem from="1480099834518" duration="1878000" />
-      <workItem from="1480149647870" duration="30869000" />
+      <workItem from="1480149647870" duration="31478000" />
     </task>
     <task id="LOCAL-00001" summary="Added $RASPBIAN">
       <created>1480162695075</created>
@@ -610,7 +613,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65063000" />
+    <option name="totallyTimeSpent" value="65672000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -622,7 +625,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="27" width="1366" height="741" extended-state="7" />
+    <frame x="0" y="27" width="1366" height="741" extended-state="6" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34901366" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -794,8 +797,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="20" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+        <state relative-caret-position="150">
+          <caret line="136" column="42" selection-start-line="136" selection-start-column="42" selection-end-line="136" selection-end-column="42" />
           <folding />
         </state>
       </provider>
