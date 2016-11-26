@@ -197,7 +197,7 @@ def adminMenu(client)
           pxcol_temp = client.gets.chomp
           (pxcol_temp.length!=6||pxcol_temp.match(/[^[0-9a-f]]/)!=nil)&&raise
           $PXCOL = pxcol_temp
-          puts "$PXCOL => 0x#{"%06x"%$PXCOL}"
+          puts "$PXCOL => 0x#{$PXCOL}"
         rescue
 
         end
