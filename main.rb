@@ -3,6 +3,7 @@
 require 'socket'
 load 'font.rb'
 $RASPBIAN = !(/arm-linux-gnueabihf/=~RUBY_PLATFORM).nil?
+$RASPBIAN = ARGV.shift!="--simulate"
 
 def puts(s); $stdout << "[#{Time.now.to_s}] #{s}\n" ;end  # define output with timestamp
 class Integer;def to_led_bin;self!=0 ? (return 0xffffff) : (return 0);end;end
@@ -34,8 +35,8 @@ class EbkMateCanvas
     if $RASPBIAN
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
-          #@leds[@addresses[y][x]] = WS2812::Color.new(@leds[@addresses[y][x]].to_s(16)[0,2].to_i(16))
-          puts "[#{indexy}][#{indexx}] => 0x#{"%06x"%canv_local[indexy][indexx].to_led_bin}"
+          hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
+          @leds[@addresses[indexy][indexx]] = WS2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
     else
