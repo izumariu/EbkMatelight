@@ -204,6 +204,8 @@ $ADMINS = Regexp.new($ADMINS.join("|"))
 
 Signal.trap("INT") {
   puts "Bye"
+  $CANVAS.clear
+  $CANVAS.show
   exit
 }
 
