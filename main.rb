@@ -40,7 +40,7 @@ class EbkMateCanvas
     }
 
     if $RASPBIAN
-      @addresses.each_with_index do |y, indexy|
+      @canvas.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
           @leds[@addresses[indexy][indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
