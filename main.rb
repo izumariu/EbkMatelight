@@ -35,7 +35,7 @@ class EbkMateCanvas
       @addresses.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
           #@leds[@addresses[y][x]] = WS2812::Color.new(@leds[@addresses[y][x]].to_s(16)[0,2].to_i(16))
-          puts "[#{indexy}][#{indexx}] => #{canv_local[indexy][indexx].inspect}"
+          puts "[#{indexy}][#{indexx}] => 0x#{"%06x"%canv_local[indexy][indexx]}"
         end
       end
     else
@@ -96,6 +96,7 @@ queuewatch = Thread.new {
               buf = []
               getFontChar(ch).each { |byte| buf << byte[i+1] }
               buf.map!(&:to_i)
+              buf.map!{|i|i==1;0xffffff;0}
               $CANVAS<<buf;$CANVAS.show;sleep 0.04
             end
             $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
@@ -105,6 +106,7 @@ queuewatch = Thread.new {
               buf = []
               getFontChar(ch).each { |byte| buf << byte[i] }
               buf.map!(&:to_i)
+              buf.map!{|i|i==1;0xffffff;0}
               buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
             end
             $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
