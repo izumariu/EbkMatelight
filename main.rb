@@ -21,7 +21,7 @@ class EbkMateCanvas
     @by = 8
     @by.times{ @canvas << Array.new; @bx.times{@canvas[-1] << 0} }
     @by.times{ @addresses << Array.new; @bx.times{@addresses[-1] << @@addrc; @@addrc+=1} }
-    @addresses.map!{|i|@addresses.index(i)%2==1;i.reverse;i}
+    #@addresses.map!{|i|@addresses.index(i)%2==1;i.reverse;i}
     #@addresses.length.times{|i|i%2==1&&@addresses[i].reverse!}
     p @addresses
     $RASPBIAN&&(@leds=Ws2812::Basic.new(40, 18, 255); @leds.open;@leds.show)
