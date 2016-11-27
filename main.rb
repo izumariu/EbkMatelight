@@ -222,16 +222,30 @@ Signal.trap("INT") {
   exit
 }
 
+def showPic(data)
+  begin
+    data = data.split(";")
+    decay = data.shift.split("=")[-1]
+    decay.split("=")[-1].to_i>10000&&raise
+    pic = []
+    $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
+    $CANVAS.show
+    sleep decay.split("=")[-1].to_i
+    return 0
+  rescue
+    return 1
+  end
+end
+
 loop do
   $THREADS << Thread.start(server.accept) do |client|
     if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
       $CLIENTS << client
         if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
-          #client.puts "Mode?"
-          #client.puts "0) Text"
-          #client.puts "1) Picture"
-          #mode = client.gets.chomp
-          mode = "0"
+          client.puts "Mode?"
+          client.puts "0) Text"
+          client.puts "1) Picture"
+          mode = client.gets.chomp
           if mode=="0"
             client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
             climsg = client.gets.chomp
@@ -240,17 +254,10 @@ loop do
             puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
             $QUEUE << climsg
           elsif mode=="1"
-            begin
-              data = client.gets.chomp.split(";")
-              decay = data.shift.split("=")[-1]
-              decay.split("=")[-1].to_i>10000&&raise
-              pic = []
-              $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
-              $CANVAS.show
-              sleep decay.split("=")[-1].to_i
-            rescue
-              Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
-            end
+            client.puts "Enter formatted string:"
+            data = client.gets.chomp
+            res = showPic(data)
+            res==1&&Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
           end
         client.close
       elsif $COOLDOWN.include?(client.peeraddr[-1])
