@@ -39,7 +39,8 @@ class EbkMateCanvas
     if $RASPBIAN
       canv_local.each_with_index do |y, indexy|
         y.each_with_index do |x, indexx|
-          hexcol = "%06x"%canv_local[indexy][indexx].to_led_bin
+          hexcol = "%06x"%canv_local[indexy][indexx]
+          (hexcol = "%06x"%hexcol.to_i(16).to_led_bin) if mode==:binary
           @leds[@addresses.flatten[indexy*5+indexx]] = Ws2812::Color.new(hexcol[0,2].to_i(16),hexcol[2,2].to_i(16),hexcol[4,2].to_i(16))
         end
       end
@@ -224,13 +225,14 @@ Signal.trap("INT") {
 
 def showPic(data)
   begin
+    $CANVAS.mode = :rgb
     data = data.split(";")
     decay = data.shift.split("=")[-1]
     decay.split("=")[-1].to_i>10000&&raise
     pic = []
     $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
     $CANVAS.show
-    sleep decay.split("=")[-1].to_i
+    sleep decay.split("=")[-1].to_i/1000
     return 0
   rescue
     return 1
