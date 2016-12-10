@@ -52,6 +52,7 @@ public class BottleDisplayWindow extends JFrame implements BottleDisplayUpdate {
                     c = text.getText();
                     if(!c.startsWith("d=") && c.length() < 60) {
                         socket.send(c);
+                        oldCmds.addItem(c);
                         System.out.println(c);
                     }
                     else {
@@ -61,16 +62,17 @@ public class BottleDisplayWindow extends JFrame implements BottleDisplayUpdate {
                 else {
                     c = cmd;
                     socket.send(c);
+                    oldCmds.addItem(c);
                     System.out.println(c);
                 }
-                oldCmds.addItem(c);
             }
         });
         oldCmds = new JComboBox<>();
         oldCmds.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-               // socket.send()
+               socket.send(oldCmds.getSelectedItem().toString());
+                System.out.println(oldCmds.getSelectedItem().toString());
             }
         });
         JButton clear = new JButton("Clear");
@@ -84,11 +86,11 @@ public class BottleDisplayWindow extends JFrame implements BottleDisplayUpdate {
             }
         });
         text = new JTextField("", 20);
-        timeSlider = new JSlider(JSlider.HORIZONTAL, 1, 10000, 1000);
+        timeSlider = new JSlider(JSlider.HORIZONTAL, 0, 10000, 1000);
         timeSlider.setMinorTickSpacing(1000);
         timeSlider.setPaintTicks(true);
         timeSlider.setPaintLabels(true);
-        timeSlider.setLabelTable(timeSlider.createStandardLabels(2000));
+        timeSlider.setLabelTable(timeSlider.createStandardLabels(5000));
         timeSlider.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent changeEvent) {
