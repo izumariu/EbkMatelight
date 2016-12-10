@@ -91,7 +91,7 @@ def showPic(data)
     $CANVAS.mode = :rgb
     data = data.split(";")
     decay = data.shift.split("=")[-1]
-    decay.split("=")[-1].to_i>10000&&raise
+    (decay.split("=")[-1].to_i>10000||decay.split("=")[-1].to_i<0)&&raise
     data.length==40||raise
     $CANVAS.by.times{|cy|
 	$CANVAS.bx.times{|cx|
