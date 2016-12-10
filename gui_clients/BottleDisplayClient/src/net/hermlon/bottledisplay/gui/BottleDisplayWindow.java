@@ -51,9 +51,20 @@ public class BottleDisplayWindow extends JFrame implements BottleDisplayUpdate {
                 if(text != null && !text.getText().equals("")) {
                     c = text.getText();
                     if(!c.startsWith("d=") && c.length() < 60) {
-                        socket.send(c);
-                        oldCmds.addItem(c);
-                        System.out.println(c);
+                        boolean valid = true;
+                        for(int i = 0; i < c.length(); i ++) {
+                            if((int)c.charAt(i) > 127) {
+                                valid = false;
+                            }
+                        }
+                        if(valid) {
+                            socket.send(c);
+                            oldCmds.addItem(c);
+                            System.out.println(c);
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(null, "Nur ASCII Eingaben!");
+                        }
                     }
                     else {
                         JOptionPane.showMessageDialog(null, "Unerlaubte Eingabe.");
