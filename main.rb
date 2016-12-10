@@ -86,37 +86,61 @@ $GAPS = 3
 server = TCPServer.new(1337)
 puts "Server is up."
 
+def showPic(data)
+  begin
+    $CANVAS.mode = :rgb
+    data = data.split(";")
+    decay = data.shift.split("=")[-1]
+    decay.split("=")[-1].to_i>10000&&raise
+    $CANVAS.by.times{|cy|
+	$CANVAS.bx.times{|cx|
+		$CANVAS.canvas[cy][cx] = data.shift.to_i(16)
+	}
+    }
+    $CANVAS.show
+    sleep decay.split("=")[-1].to_i/1000
+    return 0
+  rescue
+    return 1
+  end
+end
+
 queuewatch = Thread.new {
   require 'timeout'
   loop do
     if !$QUEUE.empty?
-      $CANVAS.mode = :binary
       msg = $QUEUE.shift
-      for ch in msg.split("")
-        case ch
-          when " "
-            6.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
-
-          when "\""
-            5.times do |i|
-              buf = []
-              getFontChar(ch).each { |byte| buf << byte[i+1] }
-              buf.map!(&:to_i)
-              $CANVAS<<buf;$CANVAS.show;sleep 0.04
-            end
-            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
-
-          else
-            8.times do |i|
-              buf = []
-              getFontChar(ch).each { |byte| buf << byte[i] }
-              buf.map!(&:to_i)
-              buf.all?(&0.method(:==))||($CANVAS<<buf;$CANVAS.show;sleep 0.04)
-            end
-            $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+      if !(msg[0,2]=="d=")
+	$CANVAS.clear
+      	$CANVAS.mode = :binary
+      	for ch in msg.split("")
+      	  case ch
+      	    when " "
+     	       6.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+	
+            when "\""
+              5.times do |i|
+                buf = []
+                getFontChar(ch).each { |byte| buf << byte[i+1] }
+                buf.map!(&:to_i)
+                $CANVAS << buf;$CANVAS.show;sleep 0.04
+              end
+              $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+  
+            else
+              8.times do |i|
+                buf = []
+                getFontChar(ch).each { |byte| buf << byte[i] }
+                buf.map!(&:to_i)
+                buf.all?(&0.method(:==))||($CANVAS << buf;$CANVAS.show;sleep 0.04)
+              end
+              $GAPS.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+          end
         end
+        $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+      else
+        showPic(msg)
       end
-      $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
       sleep 1
     end
   end
@@ -213,7 +237,7 @@ Thread.new {
   sleep 1
 }
 
-$ADMINS = ["127.0.0.1","192.168.21.187","192.168.21.155"]
+$ADMINS = ["127.0.0.1"]#,"192.168.21.187","192.168.21.155"]
 $ADMINS = Regexp.new($ADMINS.join("|"))
 
 Signal.trap("INT") {
@@ -223,44 +247,29 @@ Signal.trap("INT") {
   exit
 }
 
-def showPic(data)
-  begin
-    $CANVAS.mode = :rgb
-    data = data.split(";")
-    decay = data.shift.split("=")[-1]
-    decay.split("=")[-1].to_i>10000&&raise
-    pic = []
-    $CANVAS.by.times{pic << Array.new; $CANVAS.bx.times{pic[-1] << data.shift.to_i(16)}}
-    $CANVAS.show
-    sleep decay.split("=")[-1].to_i/1000
-    return 0
-  rescue
-    return 1
-  end
-end
-
 loop do
   $THREADS << Thread.start(server.accept) do |client|
     if ($ADMINS=~client.peeraddr[-1]).nil?&&!$MAINTENANCE
       $CLIENTS << client
         if !$BLACKLIST.keys.include?(client.peeraddr[-1])&&!$COOLDOWN.include?(client.peeraddr[-1])
-          client.puts "Mode?"
-          client.puts "0) Text"
-          client.puts "1) Picture"
-          mode = client.gets.chomp
-          if mode=="0"
-            client.puts "O HAI ENTR STRING PLZ!!1!1!!!11"
+          #client.puts "Mode?"
+          #client.puts "0) Text"
+          #client.puts "1) Picture"
+          #mode = client.gets.chomp
+          #if mode=="0"
+            client.puts "O HAI GIMMEH DATA PLZ!!1!1!!!11"
             climsg = client.gets.chomp
             #Thread.new{$COOLDOWN<<client.peeraddr[-1]; sleep $COOLDOWN_S; $COOLDOWN.select!(&client.peeraddr[-1].method(:==))}
             client.puts "KTHXBYE!!1!1!!"
-            puts "#{client.peeraddr[-1]} => #{climsg.inspect}"
+            puts "#{client.peeraddr[-1]} => #{climsg.inspect}(#{climsg[0,2]=="d=" ? "PICTURE" : "TEXT"})"
             $QUEUE << climsg
-          elsif mode=="1"
-            client.puts "Enter formatted string:"
-            data = client.gets.chomp
-            res = showPic(data)
-            res==1&&Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
-          end
+          #elsif mode=="1"
+            #client.puts "Enter formatted string:"
+            #data = client.gets.chomp
+            #$QUEUE << data
+            #res = showPic(data)
+            #res==1&&Random.rand(100)==42 ? client.puts("it's me") : client.puts("err")
+          #end
         client.close
       elsif $COOLDOWN.include?(client.peeraddr[-1])
         $COOLDOWN.select!(&client.peeraddr[-1].method(:==))
