@@ -92,6 +92,7 @@ def showPic(data)
     data = data.split(";")
     decay = data.shift.split("=")[-1]
     decay.split("=")[-1].to_i>10000&&raise
+    data.length==40||raise
     $CANVAS.by.times{|cy|
 	$CANVAS.bx.times{|cx|
 		$CANVAS.canvas[cy][cx] = data.shift.to_i(16)
@@ -99,8 +100,12 @@ def showPic(data)
     }
     $CANVAS.show
     sleep decay.split("=")[-1].to_i/1000
+    $CANVAS.clear
+    $CANVAS.show
     return 0
   rescue
+    $CANVAS.clear
+    $CANVAS.show
     return 1
   end
 end
@@ -138,10 +143,10 @@ queuewatch = Thread.new {
           end
         end
         $CANVAS.canvas[0].length.times { $CANVAS << Array.new(8){0}; $CANVAS.show; sleep 0.05 }
+      	sleep 1
       else
         showPic(msg)
       end
-      sleep 1
     end
   end
 }
@@ -260,6 +265,11 @@ loop do
             client.puts "O HAI GIMMEH DATA PLZ!!1!1!!!11"
             climsg = client.gets.chomp
             #Thread.new{$COOLDOWN<<client.peeraddr[-1]; sleep $COOLDOWN_S; $COOLDOWN.select!(&client.peeraddr[-1].method(:==))}
+            if climsg.length>60&&climsg[0,2]!="d="
+              climsg = climsg[0,60]
+              client.puts "Your message overrode the maximum length of 60 characters and was chopped down to:"
+              client.puts climsg.inspect
+            end
             client.puts "KTHXBYE!!1!1!!"
             puts "#{client.peeraddr[-1]} => #{climsg.inspect}(#{climsg[0,2]=="d=" ? "PICTURE" : "TEXT"})"
             $QUEUE << climsg
