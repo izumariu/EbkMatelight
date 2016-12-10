@@ -12,7 +12,13 @@ Signal.trap("INT") {
 	exit(0)
 }
 loop do
-	ws[Random.rand(40)] = Ws2812::Color.new(Random.rand(50..256),Random.rand(50..256),Random.rand(50..256))
-	ws.show
-	sleep 0.05
+	xarr = (0...40).to_a
+	randclr = Ws2812::Color.new(Random.rand(50..256),Random.rand(50..256),Random.rand(50..256))
+	until xarr.empty?
+		#p xarr
+		lednum = xarr.delete_at(Random.rand(xarr.length))
+		ws[lednum] = randclr
+		ws.show
+		sleep 0.05
+	end
 end
