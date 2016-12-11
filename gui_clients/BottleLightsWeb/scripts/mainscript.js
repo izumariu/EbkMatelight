@@ -4,4 +4,5 @@ function init() {
   pager.add("Test1");
   pager.add("Test2");
   pager.add("Test3");
+  pager.setSelected(1);
 }
