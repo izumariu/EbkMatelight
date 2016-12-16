@@ -2,7 +2,7 @@ function Pager(root) {
   this.names = [];
   this.divs = [];
   var selected = 0;
-  var selectedStyle = "border-bottom: 5px solid red;";
+  var pager = this;
 
   this.add = function(name, obj) {
     this.names[this.names.length] = name;
@@ -19,6 +19,7 @@ function Pager(root) {
       this.divs[i].setAttribute("class", "headerdiv");
       this.divs[i].setAttribute("id", i + "_headerdiv");
       this.divs[i].appendChild(document.createTextNode(this.names[i]));
+
       this.divs[i].addEventListener("click", this.onClickDiv, false);
       maindiv.appendChild(this.divs[i]);
     }
@@ -27,14 +28,13 @@ function Pager(root) {
 
   this.setSelected = function(position) {
     if(position < this.names.length) {
-      this.divs[selected].setAttribute("style", this.divs[selected].getAttribute("style").split(selectedStyle)[0]);
+      this.divs[selected].className = "headerdiv";
       selected = position;
-      this.divs[position].setAttribute("style", this.divs[position].getAttribute("style") + selectedStyle);
+      this.divs[position].className = "selected";
     }
   }
 
-  this.onClickDiv = function() {
-    console.log("CLick div" + event.target.getAttribute("id"));
-    this.setSelected(event.target.getAttribute("id").substring(0, 1));
+  this.onClickDiv = function(event) {
+    pager.setSelected(event.target.getAttribute("id").substring(0, 1));
   }
 }
