@@ -29,3 +29,10 @@
   background-color: gray;
   border-bottom: 5px solid red;
 }
+
+.scrollbox{
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: green;
+}

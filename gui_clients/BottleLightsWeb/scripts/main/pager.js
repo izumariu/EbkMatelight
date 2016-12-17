@@ -1,36 +1,48 @@
 function Pager(root) {
-  this.names = [];
-  this.divs = [];
+  var names = [];
+  var divs = [];
+  var contents = [];
   var selected = 0;
   var pager = this;
+  var contentdiv;
 
   this.add = function(name, obj) {
-    this.names[this.names.length] = name;
+    names[names.length] = name;
+    contents[contents.length] = obj;
     this.update();
   }
 
   this.update = function() {
-    console.log("upd8" + this.names.length);
+    console.log("upd8" + names.length);
     root.innerHTML = "";
     var maindiv = document.createElement("div");
-    for(i = 0; i < this.names.length; i ++) {
-      this.divs[i] = document.createElement("div");
-      this.divs[i].setAttribute("style", "width: " + ((100 / this.names.length)) + "%;");
-      this.divs[i].setAttribute("class", "headerdiv");
-      this.divs[i].setAttribute("id", i + "_headerdiv");
-      this.divs[i].appendChild(document.createTextNode(this.names[i]));
+    for(i = 0; i < names.length; i ++) {
+      divs[i] = document.createElement("div");
+      divs[i].setAttribute("style", "width: " + ((100 / names.length)) + "%;");
+      divs[i].className = "headerdiv";
+      divs[i].setAttribute("id", i + "_headerdiv");
+      divs[i].appendChild(document.createTextNode(names[i]));
 
-      this.divs[i].addEventListener("click", this.onClickDiv, false);
-      maindiv.appendChild(this.divs[i]);
+      divs[i].addEventListener("click", this.onClickDiv, false);
+      maindiv.appendChild(divs[i]);
     }
+    contentdiv = document.createElement("div");
+    contentdiv.className = "scrollbox";
+    //content.appendChild(document.createTextNode("hallo!"));
+    maindiv.appendChild(contentdiv);
+
     root.appendChild(maindiv);
   }
 
   this.setSelected = function(position) {
-    if(position < this.names.length) {
-      this.divs[selected].className = "headerdiv";
+    if(position < names.length) {
+      divs[selected].className = "headerdiv";
       selected = position;
-      this.divs[position].className = "selected";
+      divs[position].className = "selected";
+
+      //Test without scrolling
+      contentdiv.innerHTML = "";
+      contentdiv.appendChild(contents[selected]);
     }
   }
 
