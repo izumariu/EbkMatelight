@@ -13,8 +13,9 @@ function Pager(root) {
   }
 
   this.update = function() {
-    console.log("upd8" + names.length);
     root.innerHTML = "";
+
+    //Header:
     var maindiv = document.createElement("div");
     for(i = 0; i < names.length; i ++) {
       divs[i] = document.createElement("div");
@@ -26,9 +27,23 @@ function Pager(root) {
       divs[i].addEventListener("click", this.onClickDiv, false);
       maindiv.appendChild(divs[i]);
     }
+
+    //Content:
     contentdiv = document.createElement("div");
-    contentdiv.className = "scrollbox";
-    //content.appendChild(document.createTextNode("hallo!"));
+    contentdiv.className = "contentdiv";
+    var wrapper = document.createElement("div");
+    wrapper.className = "wrapper";
+    var scrollwrapper = document.createElement("div");
+    scrollwrapper.className = "scrollwrapper";
+
+    for(var i = 0; i < contents.length; i ++) {
+      var item = document.createElement("div");
+      item.className = "item";
+      item.appendChild(contents[i]);
+      scrollwrapper.appendChild(item);
+    }
+    wrapper.appendChild(scrollwrapper);
+    contentdiv.appendChild(wrapper);
     maindiv.appendChild(contentdiv);
 
     root.appendChild(maindiv);
@@ -40,9 +55,10 @@ function Pager(root) {
       selected = position;
       divs[position].className = "selected";
 
+      /*
       //Test without scrolling
       contentdiv.innerHTML = "";
-      contentdiv.appendChild(contents[selected]);
+      contentdiv.appendChild(contents[selected]);*/
     }
   }
 
