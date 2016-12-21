@@ -29,42 +29,10 @@
   background-color: gray;
   border-bottom: 5px solid red;
 }
-/*
-.scrollbox {
 
-  width: 100%;
+.scrollbox{
   overflow: scroll;
   overflow-x: hidden;
   overflow-y: hidden;
   background-color: green;
-}
-
-.container {
-  display: inline-block;
-  width: 100%;
-}*/
-
-box-sizing: content-box;
-box-sizing: border-box;
-
-/* Global values */
-box-sizing: inherit;
-box-sizing: initial;
-box-sizing: unset;
-
-.contentdiv {
-  max-width: 100%;
-}
-.wrapper {
-  white-space: nowrap;
-  overflow-x: scroll;
-}
-
-.scrollwrapper {
-  width: 21000;
-}
-
-.item {
-  width: 100%;
-  float: left;
 }
