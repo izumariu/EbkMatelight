@@ -13,14 +13,50 @@
       </li>
     </ul>
     <input id="text" class="textfield" type="text">
-    <button type="button" id="send">Senden</button>
-
+    <button type="button" id="send" style="float: left;">Senden</button>
+    <img id="sucessimg" src="images/ic_check_circle_black_24dp_2x.png" alt="Erfolgreich gesendet!" />
+    <p id="errormsg"></p>
     <script>
       var input = document.getElementById("text");
       var button = document.getElementById("send");
-      button.addEventListener("click", function() {
+      var sucessimg = document.getElementById("sucessimg");
+      var errormsg = document.getElementById("errormsg");
 
+      button.addEventListener("click", function() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if(this.readyState == 4 && this.status == 200) {
+            console.log(xhttp.responseText);
+            if(xhttp.responseText == "sucess") {
+              showSucess(true);
+            }
+            else {
+              showError(xhttp.responseText);
+            }
+          }
+        };
+        xhttp.open("GET", "service.php?" + "text=" + input.value, true);
+        xhttp.send();
       });
+
+
+      input.addEventListener("keydown", function() {
+        showSucess(false);
+      });
+
+      function showError(msg) {
+        errormsg.innerHTML = "";
+        errormsg.appendChild(document.createTextNode(msg));
+      }
+      function showSucess(show) {
+        if(show == true) {
+          errormsg.innerHTML = "";
+          sucessimg.setAttribute("style", "visibility: visible;")
+        }
+        else {
+          sucessimg.setAttribute("style", "visibility: hidden;")
+        }
+      }
     </script>
     <noscript>
       Das Senden an den PHP Server funktioniert nur mit JavaScript. Generell ist alles was mit JavaScript ist cool, also mach es an! (PS: bitte sage nicht, dass

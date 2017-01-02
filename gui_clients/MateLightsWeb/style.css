@@ -31,3 +31,19 @@ body {
 .textfield {
   width: 100%;
 }
+
+#send {
+  float: left;
+  height: 32px;
+  display: inline-block;
+}
+
+#sucessimg {
+  width: 32px;
+  height: 32px;
+  visibility: hidden;
+}
+
+#errormsg {
+  color: red;
+}
