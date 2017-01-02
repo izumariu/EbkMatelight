@@ -31,8 +31,16 @@
               showSucess(true);
             }
             else {
-              showError(xhttp.responseText);
+              if(xhttp.responseText != "") {
+                showError(xhttp.responseText);
+              }
+              else {
+                showError("Keine Antwort ist auch eine Antwort");
+              }
             }
+          }
+          else {
+            showError("Verbindung zum php Server fehlgeschlagen.");
           }
         };
         xhttp.open("GET", "service.php?" + "text=" + input.value, true);
