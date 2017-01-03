@@ -23,6 +23,7 @@
       var errormsg = document.getElementById("errormsg");
 
       button.addEventListener("click", function() {
+        showSucess(false);
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
           if(this.readyState == 4 && this.status == 200) {
@@ -40,7 +41,7 @@
             }
           }
           else {
-            showError("Verbindung zum php Server fehlgeschlagen.");
+            //showError("Verbindung zum php Server fehlgeschlagen.");
           }
         };
         xhttp.open("GET", "service.php?" + "text=" + input.value, true);
