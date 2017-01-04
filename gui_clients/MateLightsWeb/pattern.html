@@ -1,0 +1,109 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MateLights</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <ul class="navigation">
+      <li class="inactive">
+        <a href="index.html">Text</a>
+      </li>
+      <li class="active">
+        <a href="pattern.html">Muster</a>
+      </li>
+    </ul>
+
+    <div id="interface">
+    </div>
+
+    <button type="button" id="send" style="float: left;">Senden</button>
+    <p id="errormsg"></p>
+    <script>
+    var lastr = 0;
+    var lastg = 0;
+    var lastb = 0;
+
+    var width = 5;
+    var height = 8;
+    var bottles = new Array();
+
+    function initGUI() {
+      var interface = document.getElementById("interface");
+      interface.innerHTML = "";
+      for(i = 0; i < width * height; i ++) {
+        bottles[i] = new MateLightsBottle();
+        bottles[i].init(interface);
+      }
+    }
+
+    function MateLightsBottle() {
+      var r = 0;
+      var g = 0;
+      var b = 0;
+      var canvas = document.createElement("canvas");
+      canvas.className = "bottlecanvas";
+      canvas.setAttribute("style", "width: " + 100 / width + "%;");
+      var context = canvas.getContext("2d");
+      var this_obj = this;
+
+      canvas.addEventListener("click", function() {
+        setLastColor();
+      });
+      canvas.addEventListener("contextmenu", function(event) {
+        event.preventDefault();
+        chooseColor();
+      });
+
+      this.init = function(container) {
+        container.appendChild(canvas);
+        paintComponent();
+      }
+
+      this.setColor = function(red, green, blue) {
+        r = red;
+        g = green;
+        b = blue;
+        paintComponent();
+      }
+
+      /*Left click or tap*/
+      function setLastColor() {
+        this.setColor(lastr, lastg, lastb);
+      }
+
+      /*Right click or long hold (like open the context menu)*/
+      function chooseColor() {
+
+      }
+
+      function paintComponent() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = toHexString(r, g, b);
+        context.beginPath();
+        context.arc(80, 80, 70, 0, 2 * Math.PI);
+        context.fill();
+      }
+
+      function toHexString(r, g, b) {
+        return "#" + addZero(r.toString(16)) + addZero(g.toString(16)) + addZero(b.toString(16));
+      }
+
+      function addZero(n) {
+        if(n.length == 1) {
+          return "0" + n;
+        }
+        else {
+          return n;
+        }
+      }
+    }
+
+    initGUI();
+    </script>
+    <noscript>
+      Das Senden an den PHP Server funktioniert nur mit JavaScript. Generell ist alles was mit JavaScript ist cool, also mach es an! (PS: bitte sage nicht, dass
+man den Inhalt eines Textfeldes auch ohne JavaScript hätte senden können, das weiß ich. Aber spätestens hier beim Muster brauche ich es eh.)
+    </noscript>
+  </body>
+</html>
