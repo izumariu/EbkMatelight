@@ -64,3 +64,63 @@ body {
 .bottlecanvas {
 
 }
+
+#ccmodal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: false; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+#modalcontent {
+  position: relative;
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+  height: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+  top: 0;
+}
+
+.appear {
+    -webkit-animation-name: animateappear;
+    -webkit-animation-duration: 0.2s;
+    animation-name: animateappear;
+    animation-duration: 0.2s
+}
+
+@-webkit-keyframes animateappear {
+  from {top: 100%; opacity:0}
+  to {top: 0; opacity:1}
+}
+
+@keyframes animateappear {
+    from {top: 100%; opacity:0}
+    to {top: 0; opacity:1}
+}
+
+/*Not used. Too laggy on mobile browsers as opera ;(
+.disappear {
+    -webkit-animation-name: animatedisappear;
+    -webkit-animation-duration: 0.1s;
+    animation-name: animatedisappear;
+    animation-duration: 0.1s
+}
+
+@-webkit-keyframes animatedisappear {
+  from {top: 0; opacity:1}
+  to {top: 100%; opacity:0}
+}
+
+@keyframes animatedisappear {
+  from {top: 0; opacity:1}
+  to {top: 100%; opacity:0}
+}*/

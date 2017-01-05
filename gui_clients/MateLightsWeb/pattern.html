@@ -17,12 +17,18 @@
     <div id="interface">
     </div>
 
+    <div id="ccmodal">
+      <div id="modalcontent">
+
+      </div>
+    </div>
+
     <button type="button" id="send" style="float: left;">Senden</button>
     <p id="errormsg"></p>
     <script>
-    var lastr = 0;
-    var lastg = 0;
-    var lastb = 0;
+    var lastcolors = new Array();
+    lastcolors[0] = new Color();
+    var ccm = new ColorChooserModal();
 
     var width = 5;
     var height = 8;
@@ -37,10 +43,34 @@
       }
     }
 
+    function ColorChooserModal() {
+      var modal = document.getElementById("ccmodal");
+      var content = document.getElementById("modalcontent");
+      var this_obj = this;
+      modal.addEventListener("click", function(event) {
+        if (event.target == modal) {
+            this_obj.show.call(this_obj, false);
+        }
+      });
+      this.update(color) {
+        for(i = 0; i < 8; i ++) {
+
+        }
+      }
+
+      this.show = function(show) {
+        if(show == true) {
+          modal.style.display = "block";
+          content.className = "appear";
+        }
+        else {
+          modal.style.display = "none";
+        }
+      }
+    }
+
     function MateLightsBottle() {
-      var r = 0;
-      var g = 0;
-      var b = 0;
+      var color = new Color();
       var canvas = document.createElement("canvas");
       canvas.className = "bottlecanvas";
       canvas.setAttribute("style", "width: " + 100 / width + "%;");
@@ -48,11 +78,11 @@
       var this_obj = this;
 
       canvas.addEventListener("click", function() {
-        setLastColor();
+        setLastColor.call(this_obj);
       });
       canvas.addEventListener("contextmenu", function(event) {
         event.preventDefault();
-        chooseColor();
+        chooseColor.call(this_obj);
       });
 
       this.init = function(container) {
@@ -60,32 +90,49 @@
         paintComponent();
       }
 
-      this.setColor = function(red, green, blue) {
-        r = red;
-        g = green;
-        b = blue;
+      this.setRGBColor = function(red, green, blue) {
+        color.setColor(red, green, blue);
+        paintComponent();
+      }
+
+      this.setColor = function(c) {
+        color = c;
         paintComponent();
       }
 
       /*Left click or tap*/
       function setLastColor() {
-        this.setColor(lastr, lastg, lastb);
+        this.setColor(lastcolors[lastcolors.length - 1]);
       }
 
       /*Right click or long hold (like open the context menu)*/
       function chooseColor() {
-
+        //fjiguiohruohgourdfbhfdoughfdapgvhfdgufdhgiufhgpiufdhg
+        ccm.show(true);
+        lastcolors[lastcolors.length] = new Color();
       }
 
       function paintComponent() {
         context.clearRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = toHexString(r, g, b);
+        context.fillStyle = color.toHexString();
         context.beginPath();
         context.arc(80, 80, 70, 0, 2 * Math.PI);
         context.fill();
       }
+    }
 
-      function toHexString(r, g, b) {
+    function Color() {
+      var r = 0;
+      var g = 0;
+      var b = 0;
+
+      this.setColor = function(red, green, blue) {
+        r = red;
+        g = green;
+        b = blue;
+      }
+
+      this.toHexString = function() {
         return "#" + addZero(r.toString(16)) + addZero(g.toString(16)) + addZero(b.toString(16));
       }
 
