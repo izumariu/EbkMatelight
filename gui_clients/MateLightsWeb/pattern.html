@@ -17,10 +17,10 @@
     <div id="interface">
     </div>
 
-    <div id="ccmodal">
-      <div id="modalcontent">
-
-      </div>
+    <div id="overlay" class="overlay"></div>
+    <div id="modal" class="modal">
+ere
+<br>fejiogjiepogjpiegj
     </div>
 
     <button type="button" id="send" style="float: left;">Senden</button>
@@ -44,27 +44,35 @@
     }
 
     function ColorChooserModal() {
-      var modal = document.getElementById("ccmodal");
-      var content = document.getElementById("modalcontent");
+      var overlay = document.getElementById("overlay");
+      var modal = document.getElementById("modal");
       var this_obj = this;
-      modal.addEventListener("click", function(event) {
-        if (event.target == modal) {
+      overlay.addEventListener("click", function(event) {
+        if (event.target == overlay) {
             this_obj.show.call(this_obj, false);
         }
       });
-      this.update(color) {
+      /*
+      this.update = function(color) {
         for(i = 0; i < 8; i ++) {
-
+          var div = document.createElement("div");
+          div.style = "border-radius: 25px; background: #73AD21; padding: 10px; width: 50px; height: 50px;";
+          content.appendChild(div);
         }
-      }
+      }*/
 
       this.show = function(show) {
         if(show == true) {
           modal.style.display = "block";
-          content.className = "appear";
+          overlay.style.display = "block";
+          modal.classList.remove("slidein");
+          modal.classList.add("slidein");
+          overlay.classList.remove("fade");
+          overlay.classList.add("fade");
         }
         else {
           modal.style.display = "none";
+          overlay.style.display = "none";
         }
       }
     }
