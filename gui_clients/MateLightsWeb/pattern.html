@@ -27,6 +27,7 @@
     <p id="errormsg"></p>
 
     <script>
+    var newColorIndicator;
     var lastcolors = new Array();
     lastcolors[0] = new Color();
     lastcolors[0].setColor(11, 227, 19);
@@ -69,11 +70,12 @@
       this.getNewColor = function(color, listener) {
         callback = listener;
         lastcolorsdiv.innerHTML = "";
-        var newColor = new ColorIndicator();
-        newColor.setColor(color);
-        newColor.setListener(clickcolor);
-        newColor.init(lastcolorsdiv);
-        newColor.setSpecial(true);
+        newColorIndicator = new ColorIndicator();
+        newColorIndicator.setColor(color);
+        newColorIndicator.setListener(clickcolor);
+        newColorIndicator.init(lastcolorsdiv);
+        newColorIndicator.setSpecial(true);
+        console.log("Color:" + color.toHexString())
         for(i = lastcolors.length - 1; i >= 0; i --) {
           colorindicator[i] = new ColorIndicator();
           colorindicator[i].setColor(lastcolors[i]);
@@ -81,11 +83,12 @@
           colorindicator[i].init(lastcolorsdiv);
         }
         this.show(true);
+        colorSlider.setColor(color);/*Not the best solution, but else I could not get the actual width of the sliders.*/
       }
 
       function clickcolor(c) {
-        console.log(c.toHexString());
         lastcolors[lastcolors.length] = c;
+        callback();
         this_obj.show.call(this_obj, false);
       }
 
@@ -99,7 +102,6 @@
           overlay.classList.add("fade");
         }
         else {
-          callback();
           modal.style.display = "none";
           overlay.style.display = "none";
         }
@@ -152,6 +154,99 @@
       gdiv.setAttribute("id", "gdiv");
       bdiv.className = "colordiv";
       bdiv.setAttribute("id", "bdiv");
+
+      var sliders = new Array();
+      for(i = 0; i < 3; i ++) {
+        sliders[i] = document.createElement("div");
+        sliders[i].className = "slider";
+      }
+      rdiv.appendChild(sliders[0]);
+      gdiv.appendChild(sliders[1]);
+      bdiv.appendChild(sliders[2]);
+      if(is_touch_device() == true) {
+        rdiv.addEventListener("touchmove", function(event) {
+          setValue(sliders[0], event.changedTouches[0].clientX - getOffset(rdiv));
+        });
+        gdiv.addEventListener("touchmove", function(event) {
+          setValue(sliders[1], event.changedTouches[0].clientX - getOffset(rdiv));
+        });
+        bdiv.addEventListener("touchmove", function(event) {
+          setValue(sliders[2], event.changedTouches[0].clientX - getOffset(rdiv));
+        });
+      }
+      else {
+        rdiv.addEventListener("mousemove", function(event) {
+          if(event.buttons == 1) {
+            setValue(sliders[0], event.clientX - getOffset(rdiv));
+          }
+        });
+        gdiv.addEventListener("mousemove", function(event) {
+          if(event.buttons == 1) {
+            setValue(sliders[1], event.clientX - getOffset(rdiv));
+          }
+        });
+        bdiv.addEventListener("mousemove", function(event) {
+          if(event.buttons == 1) {
+            setValue(sliders[2], event.clientX - getOffset(rdiv));
+          }
+        });
+      }
+
+      function is_touch_device() {
+        return 'ontouchstart' in window
+        || navigator.maxTouchPoints;
+      };
+
+      function getOffset(element) {
+        var e = element;
+        var x = 0;
+        while(e != null) {
+          x += e.offsetLeft;
+          e = e.offsetParent;
+        }
+        return x + 1;
+      }
+
+      this.setColor = function(c) {
+        setColorValue(sliders[0], c.getR());
+        setColorValue(sliders[1], c.getG());
+        setColorValue(sliders[2], c.getB());
+      }
+
+      function setColorValue(slider, value) {
+        setValue(slider, value * getSlideWidth() / 255);
+      }
+
+      function getSlideWidth() {
+        return rdiv.clientWidth - 3;
+      }
+
+      function setValue(slider, px) {
+        var x = px;
+        if(x <= 0) {
+          x = 0;
+        }
+        if(x > getSlideWidth()) {
+          x = getSlideWidth();
+        }
+        slider.setAttribute("style", "margin-left: " + x + "px; display: block;");
+        var ncolor = newColorIndicator.getColor();
+        if(slider === sliders[0]) {
+          ncolor.setR(getColorValue(x));
+        }
+        else if(slider === sliders[1]) {
+          ncolor.setG(getColorValue(x));
+        }
+        else if(slider === sliders[2]) {
+          ncolor.setB(getColorValue(x));
+        }
+        newColorIndicator.setColor(ncolor);
+      }
+
+      function getColorValue(value) {
+        return Math.round(value * 255 / getSlideWidth());
+      }
+
       this.init = function(container) {
         container.appendChild(rdiv);
         container.appendChild(gdiv);
@@ -233,6 +328,25 @@
         else {
           return n;
         }
+      }
+
+      this.getR = function() {
+        return r;
+      }
+      this.getG = function() {
+        return g;
+      }
+      this.getB = function() {
+        return b;
+      }
+      this.setR = function(red) {
+        r = red;
+      }
+      this.setG = function(green) {
+        g = green;
+      }
+      this.setB = function(blue) {
+        b = blue;
       }
     }
 

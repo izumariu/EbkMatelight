@@ -207,3 +207,11 @@ body {
   background: -moz-linear-gradient(right, #FFFFFF, #0000FF); /* For Firefox 3.6 to 15 */
   background: linear-gradient(to right, #FFFFFF , #0000FF); /* Standard syntax */
 }
+
+.slider {
+  display: none;
+  background-color: black;
+  width: 5px;
+  height: 24px;
+  z-index: 1;
+}
