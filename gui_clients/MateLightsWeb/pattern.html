@@ -19,15 +19,16 @@
 
     <div id="overlay" class="overlay"></div>
     <div id="modal" class="modal">
-ere
-<br>fejiogjiepogjpiegj
+      <img id="hidemodal" src="images/ic_keyboard_arrow_down_black_24dp_2x.png" alt="[X]" />
+      <div id="lastcolorsdiv"></div>
     </div>
-
     <button type="button" id="send" style="float: left;">Senden</button>
     <p id="errormsg"></p>
+
     <script>
     var lastcolors = new Array();
     lastcolors[0] = new Color();
+    lastcolors[0].setColor(11, 227, 19);
     var ccm = new ColorChooserModal();
 
     var width = 5;
@@ -46,20 +47,44 @@ ere
     function ColorChooserModal() {
       var overlay = document.getElementById("overlay");
       var modal = document.getElementById("modal");
+      var hidemodal = document.getElementById("hidemodal");
+      var lastcolorsdiv = document.getElementById("lastcolorsdiv");
+      var colorindicator = new Array();
+      var callback;
       var this_obj = this;
+      hidemodal.addEventListener("click", function(event) {
+        if (event.target == hidemodal) {
+            this_obj.show.call(this_obj, false);
+        }
+      });
       overlay.addEventListener("click", function(event) {
         if (event.target == overlay) {
             this_obj.show.call(this_obj, false);
         }
       });
-      /*
-      this.update = function(color) {
-        for(i = 0; i < 8; i ++) {
-          var div = document.createElement("div");
-          div.style = "border-radius: 25px; background: #73AD21; padding: 10px; width: 50px; height: 50px;";
-          content.appendChild(div);
+
+      this.getNewColor = function(color, listener) {
+        callback = listener;
+        lastcolorsdiv.innerHTML = "";
+        var newColor = new ColorIndicator();
+        newColor.setColor(color);
+        newColor.setListener(clickcolor);
+        newColor.init(lastcolorsdiv);
+        newColor.setSpecial(true);
+        for(i = lastcolors.length - 1; i >= 0; i --) {
+          colorindicator[i] = new ColorIndicator();
+          colorindicator[i].setColor(lastcolors[i]);
+          colorindicator[i].setListener(clickcolor);
+          colorindicator[i].init(lastcolorsdiv);
         }
-      }*/
+        this.show(true);
+      }
+
+      function clickcolor(c) {
+        console.log(c.toHexString());
+        lastcolors[lastcolors.length] = c;
+        this_obj.show.call(this_obj, false);
+      }
 
       this.show = function(show) {
         if(show == true) {
@@ -71,9 +96,46 @@ ere
           overlay.classList.add("fade");
         }
         else {
+          callback();
           modal.style.display = "none";
           overlay.style.display = "none";
         }
+      }
+    }
+
+    function ColorIndicator() {
+      var color = new Color();
+      var div = document.createElement("div");
+      var listener;
+      var this_obj = this;
+      div.classList.add("colorindicator");
+      div.setAttribute("style", "background-color: " + color.toHexString() + ";");
+
+      this.setListener = function(l) {
+        listener = l;
+      }
+      div.addEventListener("click", function() {
+        listener(this_obj.getColor.call(this_obj));
+      });
+      this.setSpecial = function(special) {
+        if(special == true) {
+          div.classList.remove("colorindicator");
+          div.classList.add("colorindicator-special");
+        }
+        else {
+          div.classList.remove("colorindicator-special");
+          div.classList.add("colorindicator");
+        }
+      }
+      this.setColor = function(c) {
+        color = c;
+        div.setAttribute("style", "background-color: " + color.toHexString() + ";");
+      }
+      this.getColor = function() {
+        return color;
+      }
+      this.init = function(container) {
+        container.appendChild(div);
       }
     }
 
@@ -115,9 +177,9 @@ ere
 
       /*Right click or long hold (like open the context menu)*/
       function chooseColor() {
-        //fjiguiohruohgourdfbhfdoughfdapgvhfdgufdhgiufhgpiufdhg
-        ccm.show(true);
-        lastcolors[lastcolors.length] = new Color();
+        ccm.getNewColor(color, function() {
+          this_obj.setColor.call(this_obj, lastcolors[lastcolors.length - 1]);
+        });
       }
 
       function paintComponent() {
