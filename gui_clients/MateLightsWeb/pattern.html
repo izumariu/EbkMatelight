@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>MateLights</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" type="text/css">
   </head>
   <body>
     <ul class="navigation">
@@ -23,7 +23,53 @@
       <img id="hidemodal" src="images/ic_keyboard_arrow_down_black_24dp_2x.png" alt="[X]" />
       <div id="lastcolorsdiv"></div>
     </div>
-    <button type="button" id="send" style="float: left;">Senden</button>
+
+    <button type="button" id="send_pattern">Senden</button>
+    <img id="sucessimg" src="images/ic_check_circle_black_24dp_2x.png" alt="Erfolgreich gesendet!" />
+    <p id="errormsg"></p>
+
+    <table id="infotable">
+      <tr>
+        <td width="50px">
+          Titel:
+        </td>
+        <td width="300px">
+          <input id="title" class="infotextfields" type="text">
+        </td>
+      </tr>
+      <tr>
+        <td width="50px">
+          Autor:
+        </td>
+        <td width="300px">
+          <input id="author" class="infotextfields" type="text">
+        </td>
+      </tr>
+      <tr>
+        <td width="50px">
+          Beschreibung:
+        </td>
+        <td width="300px">
+          <input id="description" class="infotextfields" type="text">
+        </td>
+      </tr>
+      <tr>
+        <td width="50px">
+          E-Mail:
+        </td>
+        <td width="300px">
+          <input id="email" class="infotextfields" type="text">
+        </td>
+      </tr>
+      <tr>
+        <td width="50px">
+          Website:
+        </td>
+        <td width="300px">
+          <input id="url" class="infotextfields" type="text">
+        </td>
+      </tr>
+    </table>
     <p id="errormsg"></p>
 
     <script>
@@ -37,13 +83,93 @@
     var height = 8;
     var bottles = new Array();
 
+    var sucessimg = document.getElementById("sucessimg");
+    var errormsg = document.getElementById("errormsg");
+
     function initGUI() {
       var interface = document.getElementById("interface");
       interface.innerHTML = "";
+      if(is_touch_device() == true) {
+        interface.className = "interface_mobile";
+      }
+      else {
+        interface.className = "interface_desktop";
+      }
       for(i = 0; i < width * height; i ++) {
         bottles[i] = new MateLightsBottle();
         bottles[i].init(interface);
       }
+
+      var send = document.getElementById("send_pattern");
+      send.addEventListener("click", function(event) {
+        sendXML();
+      });
+    }
+
+    function showError(msg) {
+      errormsg.innerHTML = "";
+      errormsg.appendChild(document.createTextNode(msg));
+    }
+    function showSucess(show) {
+      if(show == true) {
+        errormsg.innerHTML = "";
+        sucessimg.setAttribute("style", "visibility: visible;")
+      }
+      else {
+        sucessimg.setAttribute("style", "visibility: hidden;")
+      }
+    }
+
+    function sendXML() {
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200) {
+          console.log(xhttp.responseText);
+          if(xhttp.responseText == "sucess") {
+            showSucess(true);
+          }
+          else {
+            if(xhttp.responseText != "") {
+              showError(xhttp.responseText);
+            }
+            else {
+              showError("Keine Antwort ist auch eine Antwort");
+            }
+          }
+        }
+        else {
+          //showError("Verbindung zum php Server fehlgeschlagen.");
+        }
+      };
+      xhttp.open("GET", "service.php?" + "xml=" + createXML(), true);
+      xhttp.send();
+    }
+
+    function createXML() {
+      var title = document.getElementById("title");
+      var author = document.getElementById("author");
+      var description = document.getElementById("description");
+      var email = document.getElementById("email");
+      var url = document.getElementById("url");
+      var xml = "<?xml version='1.0' encoding='utf-8'?>\n<bml width='" + width + "' height='" + height + "' bits='8' channels='3'>\n<header>\n";
+      xml += "<title>" + title.value + "</title>\n";
+      xml += "<description>" + description.value + "</description>\n";
+      xml += "<creator>MateLightsWeb</creator>\n";
+      xml += "<author>" + author.value + "</author>\n";
+      xml += "<email>" + email.value + "</email>\n";
+      xml += "<url>" + url.value + "</url>\n";
+      xml += "</header>\n";
+      xml += "<frame duration='50'>\n";
+      for(h = 0; h < height; h ++) {
+        xml += "<row>"
+        for(w = 0; w < width; w ++) {
+          xml += bottles[w * h].getColor().toHexadecimalString();
+        }
+        xml += "</row>\n"
+      }
+      xml += "</frame>\n</bml>";
+      console.log(xml);
+      return xml;
     }
 
     function ColorChooserModal() {
@@ -75,7 +201,6 @@
         newColorIndicator.setListener(clickcolor);
         newColorIndicator.init(lastcolorsdiv);
         newColorIndicator.setSpecial(true);
-        console.log("Color:" + color.toHexString())
         for(i = lastcolors.length - 1; i >= 0; i --) {
           colorindicator[i] = new ColorIndicator();
           colorindicator[i].setColor(lastcolors[i]);
@@ -192,11 +317,6 @@
         });
       }
 
-      function is_touch_device() {
-        return 'ontouchstart' in window
-        || navigator.maxTouchPoints;
-      };
-
       function getOffset(element) {
         var e = element;
         var x = 0;
@@ -275,6 +395,10 @@
         paintComponent();
       }
 
+      this.getColor = function() {
+        return color;
+      }
+
       this.setRGBColor = function(red, green, blue) {
         color.setColor(red, green, blue);
         paintComponent();
@@ -320,6 +444,9 @@
       this.toHexString = function() {
         return "#" + addZero(r.toString(16)) + addZero(g.toString(16)) + addZero(b.toString(16));
       }
+      this.toHexadecimalString = function() {
+        return addZero(r.toString(16)) + addZero(g.toString(16)) + addZero(b.toString(16));
+      }
 
       function addZero(n) {
         if(n.length == 1) {
@@ -349,6 +476,11 @@
         b = blue;
       }
     }
+
+    function is_touch_device() {
+      return 'ontouchstart' in window
+      || navigator.maxTouchPoints;
+    };
 
     initGUI();
     </script>

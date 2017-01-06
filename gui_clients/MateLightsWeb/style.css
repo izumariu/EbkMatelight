@@ -51,6 +51,22 @@ body {
   display: inline-block;
 }
 
+#infotable {
+  margin-left: 0px;
+}
+
+#send_pattern {
+  margin: 20px;
+  height: 60px;
+  width: 200px;
+  display: inline-block;
+}
+
+.infotextfields {
+  margin: 20px;
+  width: 100%;
+}
+
 #sucessimg {
   width: 32px;
   height: 32px;
@@ -63,6 +79,13 @@ body {
 
 .bottlecanvas {
 
+}
+
+.interface_desktop {
+  width: 50%;
+}
+.interface_mobile {
+  width: 100%;
 }
 
 #hidemodal {
