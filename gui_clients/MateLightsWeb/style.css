@@ -175,3 +175,35 @@ body {
     from {top: 100%; opacity:0;}
     to {top: 0; opacity:1;}
 }
+
+.colordiv {
+  width: 100%;
+  height: 30px;
+  border-style: solid;
+  border-width: 3px;
+  border-color: #A3A2A2;
+  margin-left: 5px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+#rdiv {
+  background: red; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, #FFFFFF , #FF0000); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FFFFFF, #FF0000); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #FFFFFF, #FF0000); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FFFFFF , #FF0000); /* Standard syntax */
+}
+#gdiv {
+  background: red; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, #FFFFFF , #00FF00); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FFFFFF, #00FF00); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #FFFFFF, #00FF00); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FFFFFF , #00FF00); /* Standard syntax */
+}
+#bdiv {
+  background: red; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, #FFFFFF , #0000FF); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, #FFFFFF, #0000FF); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, #FFFFFF, #0000FF); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, #FFFFFF , #0000FF); /* Standard syntax */
+}

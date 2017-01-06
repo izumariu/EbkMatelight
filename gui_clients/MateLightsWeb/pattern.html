@@ -1,6 +1,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>MateLights</title>
     <link rel="stylesheet" href="style.css">
   </head>
@@ -51,6 +52,8 @@
       var lastcolorsdiv = document.getElementById("lastcolorsdiv");
       var colorindicator = new Array();
       var callback;
+      var colorSlider = new ColorSlider();
+      colorSlider.init(modal);
       var this_obj = this;
       hidemodal.addEventListener("click", function(event) {
         if (event.target == hidemodal) {
@@ -136,6 +139,23 @@
       }
       this.init = function(container) {
         container.appendChild(div);
+      }
+    }
+
+    function ColorSlider() {
+      var rdiv = document.createElement("div");
+      var gdiv = document.createElement("div");
+      var bdiv = document.createElement("div");
+      rdiv.className = "colordiv";
+      rdiv.setAttribute("id", "rdiv");
+      gdiv.className = "colordiv";
+      gdiv.setAttribute("id", "gdiv");
+      bdiv.className = "colordiv";
+      bdiv.setAttribute("id", "bdiv");
+      this.init = function(container) {
+        container.appendChild(rdiv);
+        container.appendChild(gdiv);
+        container.appendChild(bdiv);
       }
     }
 
