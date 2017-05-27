@@ -30,7 +30,7 @@
         }
       }
       if(sendTelnet($command)) {
-        echo "sucess";
+        echo "success";
       }
       else {
         echo "Ein Fehler ist aufgereten!";
