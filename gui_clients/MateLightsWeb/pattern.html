@@ -121,11 +121,15 @@
     }
 
     function sendXML() {
+      /*
+      for(h = 0; h < height * width; h ++) {
+          bottles[h].setRGBColor(255,0,255);
+      }*/
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = function() {
         if(this.readyState == 4 && this.status == 200) {
           console.log(xhttp.responseText);
-          if(xhttp.responseText == "sucess") {
+          if(xhttp.responseText == "success") {
             showSucess(true);
           }
           else {
@@ -159,11 +163,11 @@
       xml += "<email>" + email.value + "</email>\n";
       xml += "<url>" + url.value + "</url>\n";
       xml += "</header>\n";
-      xml += "<frame duration='50'>\n";
+      xml += "<frame duration='9000'>\n";
       for(h = 0; h < height; h ++) {
         xml += "<row>"
         for(w = 0; w < width; w ++) {
-          xml += bottles[w * h].getColor().toHexadecimalString();
+          xml += bottles[h * (width) + w].getColor().toHexadecimalString();
         }
         xml += "</row>\n"
       }

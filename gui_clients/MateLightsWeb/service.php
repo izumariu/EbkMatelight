@@ -1,17 +1,16 @@
 <?php
-  const ip = "localhost";
-  const port = "80";
-
+  const ip = "mariuszero";
+  const port = "1337";
   if(isset($_GET["text"])) {
     if($_GET["text"] != "") {
       if(substr($_GET["text"], 0, 2) != "d=") {
         if(sendTelnet($_GET["text"])) {
-          echo "sucess";
+          echo "success";
         }
         /*Specific error message by the sendTelnet function*/
       }
       else {
-        echo "Chronos allein bestimmt über die Zeit! (Eigentlich habe ich nichts für griechische Mythologie übrig... Ist auch nicht wirklich lustig. Aber wer ist schon so schlau und versucht d= einzugeben?! {Hi Marius der es natürlich testen muss. xD})";
+        echo "Zeit darf nicht verändert werden!";
       }
     }
     else {
@@ -25,13 +24,16 @@
       $command .= "d=" . $xml->frame["duration"] . ";";
 
       foreach ($xml->frame->row as $row) {
-        $arr1 = str_split($row, 2);
+        $arr1 = str_split($row, 6);
         for($i = 0; $i < count($arr1); $i ++) {
           $command .= $arr1[$i] . ";";
         }
       }
       if(sendTelnet($command)) {
         echo "sucess";
+      }
+      else {
+        echo "Ein Fehler ist aufgereten!";
       }
     }
   }
